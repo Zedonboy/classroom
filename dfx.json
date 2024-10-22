@@ -1,0 +1,17 @@
+{
+  "canisters": {
+    "classroom_backend": {
+      "candid": "src/classroom_backend/classroom_backend.did",
+      "package": "classroom_backend",
+      "type": "rust"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}

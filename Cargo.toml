@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "src/classroom_backend"
+]
+resolver = "2"
