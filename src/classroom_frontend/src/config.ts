@@ -1,0 +1,1 @@
+export const HOST = process.env.NODE_ENV === "development" ? "http://localhost:4943" : "https://ic0.app"

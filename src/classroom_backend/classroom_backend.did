@@ -1,3 +1,30 @@
-service : {
-    "greet": (text) -> (text) query;
+type ExchangeRate = record {
+  rate : float64;
+  last_updated : text;
+  to_currency : text;
+  from_currency : text;
+};
+type FinancialGoal = record {
+  total_income_monthly : float64;
+  total_amount : float64;
+  timeframe : text;
+  purpose : text;
+  total_expenses_monthly : float64;
+};
+type HttpHeader = record { value : text; name : text };
+type HttpResponse = record {
+  status : nat;
+  body : blob;
+  headers : vec HttpHeader;
+};
+type Result = variant { Ok : ExchangeRate; Err : text };
+type Result_1 = variant { Ok; Err : text };
+type TransformArgs = record { context : blob; response : HttpResponse };
+service : () -> {
+  export_candid : () -> (text) query;
+  get_exchange_rate : (text, text) -> (Result);
+  get_latest_rate : () -> (opt ExchangeRate) query;
+  health_check : () -> (text) query;
+  submit_financial_goal : (FinancialGoal) -> (Result_1);
+  transform : (TransformArgs) -> (HttpResponse) query;
 }

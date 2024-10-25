@@ -1,61 +1,178 @@
-# `classroom`
+# Classroom Project
 
-Welcome to your new `classroom` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+A decentralized classroom management system built on the Internet Computer (ICP) platform using Rust and Vue.js.
 
-To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
+## Prerequisites
 
-To learn more before you start working with `classroom`, see the following documentation available online:
+Before you begin, ensure you have the following installed:
 
-- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
-- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
-- [Rust Canister Development Guide](https://internetcomputer.org/docs/current/developer-docs/backend/rust/)
-- [ic-cdk](https://docs.rs/ic-cdk)
-- [ic-cdk-macros](https://docs.rs/ic-cdk-macros)
-- [Candid Introduction](https://internetcomputer.org/docs/current/developer-docs/backend/candid/)
+1. **Rust & Wasm Target**
+   ```bash
+   # Install Rust
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
-If you want to start working on your project right away, you might want to try the following commands:
+   # Add Wasm target
+   rustup target add wasm32-unknown-unknown
+   ```
 
-```bash
-cd classroom/
-dfx help
-dfx canister --help
+2. **Internet Computer SDK**
+   ```bash
+   sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+   ```
+
+3. **Candid Extractor**
+   ```bash
+   cargo install candid-extractor
+   ```
+
+4. **Node.js & npm** (version 16 or higher recommended)
+
+## Quick Start
+
+Follow these steps to get the project running locally:
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd classroom
+   ```
+
+2. **Start the local ICP replica**
+   ```bash
+   dfx start --background
+   ```
+
+3. **Prepare the environment**
+   ```bash
+   ./prep.sh
+   ```
+
+4. **Deploy the canisters**
+   ```bash
+   dfx deploy
+   ```
+
+5. **Generate Candid interfaces**
+   ```bash
+   dfx generate
+   ```
+
+6. **Install dependencies**
+   ```bash
+   # Root directory dependencies
+   npm install
+
+   # Frontend dependencies
+   cd src/classroom_frontend
+   npm install
+   ```
+
+7. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+Your application will be available at:
+- Backend: `http://localhost:4943?canisterId={asset_canister_id}`
+- Frontend: `http://localhost:5173`
+
+## Project Structure
+
+```
+classroom/
+├── src/
+│   ├── classroom_backend/    # Rust backend canister
+│   │   └── src/
+│   │       └── lib.rs
+│   └── classroom_frontend/   # Vue.js frontend
+│       ├── src/
+│       └── package.json
+├── dfx.json                  # DFX configuration
+├── package.json
+└── prep.sh                   # Environment preparation script
 ```
 
-## Running the project locally
+## Development Workflow
 
-If you want to test your project locally, you can use the following commands:
+### Backend Changes
 
+After making changes to the Rust backend:
+
+1. Generate new Candid interfaces:
+   ```bash
+   dfx generate
+   ```
+
+2. Redeploy the canister:
+   ```bash
+   dfx deploy classroom_backend
+   ```
+
+### Frontend Changes
+
+The development server will automatically reload when you make changes to the frontend code.
+
+To build for production:
 ```bash
-# Starts the replica, running in the background
-dfx start --background
-
-# Deploys your canisters to the replica and generates your candid interface
-dfx deploy
+cd src/classroom_frontend
+npm run build
 ```
 
-Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
+## Deployment
 
-If you have made changes to your backend canister, you can generate a new candid interface with
+To deploy to the IC mainnet:
 
-```bash
-npm run generate
-```
+1. Ensure you have ICP tokens for canister cycles
+2. Configure your cycles wallet
+3. Deploy using:
+   ```bash
+   dfx deploy --network ic
+   ```
 
-at any time. This is recommended before starting the frontend development server, and will be run automatically any time you run `dfx deploy`.
+## Environment Variables
 
-If you are making frontend changes, you can start a development server with
+For frontend deployment without DFX, you'll need to handle the `DFX_NETWORK` environment variable. Options include:
 
-```bash
-npm start
-```
+- Setting `DFX_NETWORK=ic` for Webpack
+- Configuring `dfx.json` with environment overrides
+- Creating a custom `createActor` constructor
 
-Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
+## Contributing
 
-### Note on frontend environment variables
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
-If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
+## Troubleshooting
 
-- set`DFX_NETWORK` to `ic` if you are using Webpack
-- use your own preferred method to replace `process.env.DFX_NETWORK` in the autogenerated declarations
-  - Setting `canisters -> {asset_canister_id} -> declarations -> env_override to a string` in `dfx.json` will replace `process.env.DFX_NETWORK` with the string in the autogenerated declarations
-- Write your own `createActor` constructor
+Common issues and solutions:
+
+1. **Replica not starting**
+   ```bash
+   dfx stop
+   dfx start --clean --background
+   ```
+
+2. **Build errors**
+   ```bash
+   # Clean and rebuild
+   dfx canister delete --all
+   dfx generate
+   dfx deploy
+   ```
+
+## Additional Resources
+
+- [Internet Computer Documentation](https://internetcomputer.org/docs/current/developer-docs/)
+- [Rust Canister Guide](https://internetcomputer.org/docs/current/developer-docs/backend/rust/)
+- [Vue.js Documentation](https://vuejs.org/)
+
+## License
+
+[MIT License](LICENSE)
+
+## Contact
+
+For support or queries, please open an issue in the repository.

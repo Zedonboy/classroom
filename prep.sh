@@ -1,0 +1,1 @@
+cargo build --release --target wasm32-unknown-unknown --package classroom_backend && candid-extractor target/wasm32-unknown-unknown/release/classroom_backend.wasm > src/classroom_backend/classroom_backend.did
